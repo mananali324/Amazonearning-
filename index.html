@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Amazon Earning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #00c6ff, #0072ff);
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-top: 30px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b, #f9d423, #24fe41, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 450px;
+      height: 450px;
+      margin: 40px auto;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 50px solid red;
+      z-index: 10;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 10px solid #fff;
+      position: relative;
+      transition: transform 5s ease-out;
+      overflow: hidden;
+    }
+
+    .spin-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 130px;
+      height: 130px;
+      background: #000;
+      border: 6px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 11;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    .sector {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      padding-left: 20px;
+    }
+
+    .earnings {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #000;
+      width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .withdraw {
+      margin-top: 30px;
+    }
+
+    .withdraw button {
+      padding: 12px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      background-color: #ff4b2b;
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .withdraw p {
+      margin-top: 10px;
+      color: yellow;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Amazon Earning</h1>
+
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel">
+      <div class="sector" style="background: #a8e6cf; transform: rotate(0deg) skewY(-51deg);">100$</div>
+      <div class="sector" style="background: #dcedc1; transform: rotate(51.42deg) skewY(-51deg);">200$</div>
+      <div class="sector" style="background: #ffd3b6; transform: rotate(102.84deg) skewY(-51deg);">500$</div>
+      <div class="sector" style="background: #ffaaa5; transform: rotate(154.26deg) skewY(-51deg);">700$</div>
+      <div class="sector" style="background: #fdfd96; transform: rotate(205.68deg) skewY(-51deg);">800$</div>
+      <div class="sector" style="background: #a0c4ff; transform: rotate(257.1deg) skewY(-51deg);">900$</div>
+      <div class="sector" style="background: #bdb2ff; transform: rotate(308.52deg) skewY(-51deg);">1000$</div>
+    </div>
+    <button class="spin-button" id="spinBtn">SPIN</button>
+  </div>
+
+  <div class="earnings">
+    <h2>Your Earnings</h2>
+    <p id="spinCount">Total Spins: 0</p>
+    <p id="earningsList">Last Win: -</p>
+    <p id="totalEarned">Total Earned: $0</p>
+  </div>
+
+  <div class="withdraw">
+    <button>Withdraw</button>
+    <p>Withdraw karne ke liye 7 logon ke sath share karna zaroori hai.</p>
+  </div>
+
+  <script>
+    let spinCount = 0;
+    let totalEarned = 0;
+    const values = [100, 200, 500, 700, 800, 900, 1000];
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    document.getElementById('spinBtn').addEventListener('click', function () {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const wheel = document.getElementById('wheel');
+      const degreePerSection = 360 / values.length;
+      const randomIndex = Math.floor(Math.random() * values.length);
+      const extraSpins = 5 * 360;
+      const landingDeg = 360 - randomIndex * degreePerSection - degreePerSection / 2;
+      currentRotation += extraSpins + landingDeg;
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+      setTimeout(() => {
+        spinCount++;
+        const winAmount = values[randomIndex];
+        totalEarned += winAmount;
+
+        document.getElementById('spinCount').innerText = `Total Spins: ${spinCount}`;
+        document.getElementById('earningsList').innerText = `Last Win: $${winAmount}`;
+        document.getElementById('totalEarned').innerText = `Total Earned: $${totalEarned}`;
+
+        isSpinning = false;
+      }, 5100);
+    });
+  </script>
+
+</body>
+</html>
